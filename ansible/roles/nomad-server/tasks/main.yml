@@ -1,0 +1,13 @@
+- name: create nomad config directory
+  file:
+    path: /etc/nomad/conf.d
+    state: directory
+  become: true
+  become_user: root
+
+- name: copy nomad server config
+  copy:
+    src: nomad/server.hcl
+    dest: /etc/nomad/conf.d/server.hcl
+  become: true
+  become_user: root

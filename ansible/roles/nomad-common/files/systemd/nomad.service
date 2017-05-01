@@ -1,0 +1,11 @@
+[Unit]
+Description=nomad
+
+[Service]
+ExecStart=/usr/bin/nomad agent -config=/etc/nomad/conf.d
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=nomad.service

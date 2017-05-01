@@ -30,4 +30,21 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "ansible/consul-vagrant.yml"
     end
   end
+
+  config.vm.define "nomad-server" do |c|
+    c.vm.host_name = "nomad-server"
+
+    c.vm.network "private_network", ip: "192.168.249.3"
+
+    c.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = "1024"
+    end
+
+    install_python(c)
+
+    c.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/nomad-server-vagrant.yml"
+    end
+  end
 end

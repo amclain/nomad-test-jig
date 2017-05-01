@@ -1,0 +1,80 @@
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  become_user: root
+
+- name: install apt packages
+  apt:
+    name: "{{ item }}"
+  become: true
+  become_user: root
+  with_items:
+    - ca-certificates
+    - curl
+    - wget
+    - unzip
+
+- name: download nomad
+  get_url:
+    url: "{{ nomad_download_url }}"
+    dest: /opt/nomad.zip
+    checksum: "{{ nomad_download_checksum }}"
+  become: true
+  become_user: root
+  register: download_nomad
+
+- name: unzip nomad
+  unarchive:
+    src: /opt/nomad.zip
+    dest: /usr/bin
+    copy: no
+    remote_src: true
+  become: true
+  become_user: root
+  when: download_nomad.changed
+
+- name: create nomad jobs directory
+  file:
+    path: "{{ nomad_data_dir }}"
+    state: directory
+  become: true
+  become_user: root
+
+- name: create nomad config directory
+  file:
+    path: /etc/nomad/conf.d
+    state: directory
+  become: true
+  become_user: root
+
+- name: create nomad config
+  template:
+    src: nomad/nomad.hcl
+    dest: /etc/nomad/conf.d
+  become: true
+  become_user: root
+  register: create_nomad_config
+
+- name: create nomad service
+  copy:
+    src: systemd/nomad.service
+    dest: /etc/systemd/system/nomad.service
+  become: true
+  become_user: root
+  register: create_nomad_service
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+  become_user: root
+  when: create_nomad_service.changed
+
+- name: restart nomad service
+  service:
+    name: nomad
+    state: restarted
+  become: true
+  become_user: root
+  when: create_nomad_service.changed or create_nomad_config.changed
