@@ -57,6 +57,15 @@
   become_user: root
   register: create_consul_config
 
+- name: create consul server config
+  template:
+    src: server.json
+    dest: /etc/consul/conf.d/server.json
+  become: true
+  become_user: root
+  register: create_consul_server_config
+  when: consul_is_server
+
 - name: create consul service
   copy:
     src: systemd/consul.service
@@ -77,4 +86,4 @@
     state: restarted
   become: true
   become_user: root
-  when: create_consul_service.changed or create_consul_config.changed
+  when: create_consul_service.changed or create_consul_config.changed or create_consul_server_config.changed

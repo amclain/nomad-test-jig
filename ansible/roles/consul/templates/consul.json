@@ -1,6 +1,5 @@
 {
   "advertise_addr": "{{ ansible_enp0s8.ipv4.address }}",
-  "bootstrap_expect": 1,
   "client_addr": "0.0.0.0",
   "data_dir": "{{ consul_data_dir }}",
   "disable_remote_exec": true,
@@ -12,7 +11,6 @@
     "8.8.8.8",
     "8.8.4.4"
   ],
-  "server": true,
-  "skip_leave_on_interrupt": false,
-  "ui": true
+  "retry_join": ["192.168.249.2"],
+  "skip_leave_on_interrupt": false
 }

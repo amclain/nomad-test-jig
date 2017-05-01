@@ -1,3 +1,5 @@
 - hosts: all
   roles:
     - role: consul
+  vars:
+    consul_is_server: true

@@ -1,3 +1,4 @@
 consul_download_url: https://releases.hashicorp.com/consul/0.8.1/consul_0.8.1_linux_amd64.zip
 consul_download_checksum: "sha256:74cdd7ad458aa63192222ad2bd14178fc3596d4fd64d12a80520d4e6f93eaf34"
 consul_data_dir: /opt/consul
+consul_is_server: false
