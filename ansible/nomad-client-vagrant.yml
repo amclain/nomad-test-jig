@@ -1,0 +1,4 @@
+- hosts: all
+  roles:
+    - role: nomad-client
+    - role: nomad-common

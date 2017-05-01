@@ -1,0 +1,54 @@
+- name: add docker apt key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+  become: true
+  become_user: root
+
+- name: add docker to apt sources
+  copy:
+    src: apt/docker.list
+    dest: /etc/apt/sources.list.d/docker.list
+  become: true
+  become_user: root
+
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  become_user: root
+
+- name: install apt packages
+  apt:
+    name: "{{ item }}"
+  become: true
+  become_user: root
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - wget
+    - docker-ce
+
+- name: add user to docker group
+  user:
+    name: ubuntu
+    groups: docker
+    append: true
+  become: true
+  become_user: root
+
+- name: create nomad config directory
+  file:
+    path: /etc/nomad/conf.d
+    state: directory
+  become: true
+  become_user: root
+
+- name: copy nomad client config
+  copy:
+    src: nomad/client.hcl
+    dest: /etc/nomad/conf.d/client.hcl
+  become: true
+  become_user: root
