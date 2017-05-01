@@ -5,6 +5,7 @@
   "disable_remote_exec": true,
   "leave_on_terminate": false,
   "ports": {
+    "dns": 53,
     "http": 8500
   },
   "recursors": [

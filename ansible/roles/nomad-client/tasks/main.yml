@@ -4,6 +4,7 @@
     id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
   become: true
   become_user: root
+  register: add_docker_apt_key
 
 - name: add docker to apt sources
   copy:
@@ -11,13 +12,14 @@
     dest: /etc/apt/sources.list.d/docker.list
   become: true
   become_user: root
+  register: add_docker_apt_source
 
 - name: update apt cache
   apt:
     update_cache: yes
-    cache_valid_time: 3600
   become: true
   become_user: root
+  when: add_docker_apt_key.changed or add_docker_apt_source.changed
 
 - name: install apt packages
   apt:
