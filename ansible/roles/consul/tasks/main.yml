@@ -1,0 +1,80 @@
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  become_user: root
+
+- name: install apt packages
+  apt:
+    name: "{{ item }}"
+  become: true
+  become_user: root
+  with_items:
+    - ca-certificates
+    - curl
+    - wget
+    - unzip
+
+- name: download consul
+  get_url:
+    url: "{{ consul_download_url }}"
+    dest: /opt/consul.zip
+    checksum: "{{ consul_download_checksum }}"
+  become: true
+  become_user: root
+  register: download_consul
+
+- name: unzip consul
+  unarchive:
+    src: /opt/consul.zip
+    dest: /usr/bin
+    copy: no
+    remote_src: true
+  become: true
+  become_user: root
+  when: download_consul.changed
+
+- name: create consul data directory
+  file:
+    path: "{{ consul_data_dir }}"
+    state: directory
+  become: true
+  become_user: root
+
+- name: create consul etc directory
+  file:
+    path: /etc/consul/conf.d
+    state: directory
+  become: true
+  become_user: root
+
+- name: create consul config
+  template:
+    src: consul.json
+    dest: /etc/consul/consul.json
+  become: true
+  become_user: root
+  register: create_consul_config
+
+- name: create consul service
+  copy:
+    src: systemd/consul.service
+    dest: /etc/systemd/system/consul.service
+  become: true
+  become_user: root
+  register: create_consul_service
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+  become_user: root
+  when: create_consul_service.changed
+
+- name: restart consul service
+  service:
+    name: consul
+    state: restarted
+  become: true
+  become_user: root
+  when: create_consul_service.changed or create_consul_config.changed
