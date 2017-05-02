@@ -12,6 +12,6 @@
     "8.8.8.8",
     "8.8.4.4"
   ],
-  "retry_join": ["192.168.249.2"],
+  "retry_join": ["{{ consul_server_ip }}"],
   "skip_leave_on_interrupt": false
 }

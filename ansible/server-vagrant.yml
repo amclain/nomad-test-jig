@@ -1,5 +1,7 @@
 - hosts: all
   roles:
     - role: consul
+    - role: nomad-server
+    - role: nomad-common
   vars:
     consul_is_server: true

@@ -49,7 +49,7 @@
   become_user: root
 
 - name: copy nomad client config
-  copy:
+  template:
     src: nomad/client.hcl
     dest: /etc/nomad/conf.d/client.hcl
   become: true
