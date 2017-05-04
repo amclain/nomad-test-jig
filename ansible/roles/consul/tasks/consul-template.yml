@@ -1,0 +1,47 @@
+- name: download consul-template
+  get_url:
+    url: "{{ consul_template_download_url }}"
+    dest: /opt/consul-template.zip
+    checksum: "{{ consul_template_download_checksum }}"
+  become: true
+  become_user: root
+  register: download_consul_template
+
+- name: unzip consul-template
+  unarchive:
+    src: /opt/consul-template.zip
+    dest: /usr/bin
+    copy: no
+    remote_src: true
+  become: true
+  become_user: root
+  when: download_consul_template.changed
+
+- name: create consul-template etc directory
+  file:
+    path: /etc/consul-template/conf.d
+    state: directory
+  become: true
+  become_user: root
+
+- name: create consul-template service
+  copy:
+    src: systemd/consul-template.service
+    dest: /etc/systemd/system/consul-template.service
+  become: true
+  become_user: root
+  register: create_consul_template_service
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+  become_user: root
+  when: create_consul_template_service.changed
+
+- name: restart consul-template service
+  service:
+    name: consul-template
+    state: restarted
+  become: true
+  become_user: root
+  when: create_consul_template_service.changed

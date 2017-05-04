@@ -1,0 +1,11 @@
+[Unit]
+Description=consul-template
+
+[Service]
+ExecStart=/usr/bin/consul-template agent -config /etc/consul-template/conf.d
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=consul-template.service
