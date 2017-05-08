@@ -71,6 +71,12 @@
   become_user: root
   when: create_nomad_service.changed
 
+- name: enable service
+  command: systemctl enable nomad
+  become: true
+  become_user: root
+  when: create_nomad_service.changed
+
 - name: restart nomad service
   service:
     name: nomad

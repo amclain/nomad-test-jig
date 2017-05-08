@@ -38,6 +38,12 @@
   become_user: root
   when: create_consul_template_service.changed
 
+- name: enable service
+  command: systemctl enable consul-template
+  become: true
+  become_user: root
+  when: create_consul_template_service.changed
+
 - name: restart consul-template service
   service:
     name: consul-template
