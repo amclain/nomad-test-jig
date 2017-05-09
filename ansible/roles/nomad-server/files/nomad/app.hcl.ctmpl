@@ -2,7 +2,7 @@ job "app" {
   datacenters = ["dc1"]
 
   group "app" {
-    count = 1
+    count = "{{ keyOrDefault "app-count" "1" }}"
 
     task "app" {
       driver = "docker"
