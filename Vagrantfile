@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
 
     c.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/server-vagrant.yml"
+      ansible.host_key_checking = false
     end
   end
 
@@ -45,6 +46,7 @@ Vagrant.configure("2") do |config|
 
     c.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/nomad-client-vagrant.yml"
+      ansible.host_key_checking = false
     end
   end
 end

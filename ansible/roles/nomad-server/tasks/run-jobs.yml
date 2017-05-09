@@ -1,0 +1,10 @@
+- name: find nomad jobs
+  find:
+    paths: "{{ nomad_data_dir }}"
+    pattern: "*.hcl"
+  register: nomad_jobs
+
+- name: run nomad jobs
+  command: "nomad run {{ item.path }}"
+  with_items: "{{ nomad_jobs.files }}"
+  changed_when: false

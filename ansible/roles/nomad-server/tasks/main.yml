@@ -11,3 +11,34 @@
     dest: /etc/nomad/conf.d/server.hcl
   become: true
   become_user: root
+
+- name: create nomad jobs directory
+  file:
+    path: "{{ nomad_data_dir }}"
+    state: directory
+  become: true
+  become_user: root
+
+- name: copy test app nomad job
+  copy:
+    src: nomad/app.hcl.ctmpl
+    dest: "{{ nomad_data_dir }}/app.hcl.ctmpl"
+  become: true
+  become_user: root
+  register: copy_test_app_nomad_job
+
+- name: copy app consul-template config
+  template:
+    src: consul-template/app.hcl
+    dest: /etc/consul-template/conf.d/app.hcl
+  become: true
+  become_user: root
+  register: create_app_consul_template_config
+
+- name: reload consul-template service
+  service:
+    name: consul-template
+    state: reloaded
+  become: true
+  become_user: root
+  when: create_app_consul_template_config.changed or copy_test_app_nomad_job.changed

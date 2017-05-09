@@ -1,0 +1,37 @@
+job "app" {
+  datacenters = ["dc1"]
+
+  group "app" {
+    count = 1
+
+    task "app" {
+      driver = "docker"
+
+      config {
+        image = "amclain/nomad-test-jig-app:{{ keyOrDefault "app-tag" "1" }}"
+      }
+
+      service {
+        name = "app"
+        port = "http"
+
+        check {
+          type = "http"
+          path = "/health"
+          interval = "10s"
+          timeout = "2s"
+        }
+      }
+
+      resources {
+        cpu = 500
+        memory = 256
+
+        network {
+          mbits = 1
+          port "http" {}
+        }
+      }
+    }
+  }
+}
