@@ -1,0 +1,45 @@
+# Fabio load balancer
+# https://github.com/fabiolb/fabio
+
+- name: download fabio
+  get_url:
+    url: "{{ fabio_download_url }}"
+    dest: /usr/bin/fabio
+    checksum: "{{ fabio_download_checksum }}"
+  become: true
+  become_user: root
+
+- name: make fabio executable
+  file:
+    path: /usr/bin/fabio
+    mode: "0755"
+  become: true
+  become_user: root
+
+- name: create fabio service
+  copy:
+    src: systemd/fabio.service
+    dest: /etc/systemd/system/fabio.service
+  become: true
+  become_user: root
+  register: create_fabio_service
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+  become_user: root
+  when: create_fabio_service.changed
+
+- name: enable service
+  command: systemctl enable fabio
+  become: true
+  become_user: root
+  when: create_fabio_service.changed
+
+- name: restart fabio service
+  service:
+    name: fabio
+    state: restarted
+  become: true
+  become_user: root
+  when: create_fabio_service.changed

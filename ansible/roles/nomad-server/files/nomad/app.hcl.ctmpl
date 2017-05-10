@@ -14,6 +14,7 @@ job "app" {
       service {
         name = "app"
         port = "http"
+        tags = ["urlprefix-/"]
 
         check {
           type = "http"

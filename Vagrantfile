@@ -49,4 +49,22 @@ Vagrant.configure("2") do |config|
       ansible.host_key_checking = false
     end
   end
+
+  config.vm.define "load-balancer" do |c|
+    c.vm.host_name = "load-balancer"
+
+    c.vm.network "private_network", ip: "192.168.249.4"
+
+    c.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = "1024"
+    end
+
+    install_python(c)
+
+    c.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/load-balancer-vagrant.yml"
+      ansible.host_key_checking = false
+    end
+  end
 end

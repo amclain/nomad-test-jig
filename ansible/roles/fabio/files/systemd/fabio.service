@@ -1,0 +1,10 @@
+[Unit]
+Description=fabio
+
+[Service]
+ExecStart=/usr/bin/fabio
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
