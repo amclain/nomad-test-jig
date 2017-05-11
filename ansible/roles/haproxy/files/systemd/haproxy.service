@@ -1,0 +1,10 @@
+[Unit]
+Description=haproxy
+
+[Service]
+ExecStart=/usr/local/sbin/haproxy -f /etc/haproxy/haproxy.cfg
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,3 @@
+haproxy_download_url: http://www.haproxy.org/download/1.7/src/haproxy-1.7.5.tar.gz
+haproxy_download_checksum: "md5:ed84c80cb97852d2aa3161ed16c48a1c"
+haproxy_dir: "{{ haproxy_download_url | basename | splitext | first | splitext | first }}"

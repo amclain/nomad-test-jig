@@ -1,0 +1,117 @@
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  become_user: root
+
+- name: install apt packages
+  apt:
+    name: "{{ item }}"
+  become: true
+  become_user: root
+  with_items:
+    - ca-certificates
+    - curl
+    - wget
+    - unzip
+    - build-essential
+
+- name: download haproxy
+  get_url:
+    url: "{{ haproxy_download_url }}"
+    dest: /opt/haproxy.zip
+    checksum: "{{ haproxy_download_checksum }}"
+  become: true
+  become_user: root
+  register: download_haproxy
+
+- name: unzip haproxy
+  unarchive:
+    src: /opt/haproxy.zip
+    dest: /opt
+    copy: no
+    remote_src: true
+  become: true
+  become_user: root
+  when: download_haproxy.changed
+  register: haproxy_unzipped
+
+- name: check for extracted haproxy
+  stat:
+    path: "/opt/{{ haproxy_dir }}"
+  register: check_haproxy_dir
+
+- name: remove old haproxy directory
+  file:
+    path: /opt/haproxy
+    state: absent
+  become: true
+  become_user: root
+  when: check_haproxy_dir.stat.exists
+
+- name: move extracted haproxy directory
+  command: "mv /opt/{{ haproxy_dir }} /opt/haproxy"
+  become: true
+  become_user: root
+  when: check_haproxy_dir.stat.exists
+
+- name: build haproxy
+  make:
+    chdir: /opt/haproxy
+    params:
+      TARGET: generic
+  become: true
+  become_user: root
+  when: haproxy_unzipped.changed
+
+- name: install haproxy
+  make:
+    chdir: /opt/haproxy
+    target: install
+  become: true
+  become_user: root
+  when: haproxy_unzipped.changed
+
+- name: create haproxy etc directory
+  file:
+    path: /etc/haproxy
+    state: directory
+  become: true
+  become_user: root
+
+- name: create haproxy config
+  template:
+    src: haproxy.cfg
+    dest: /etc/haproxy/haproxy.cfg
+  become: true
+  become_user: root
+  register: create_haproxy_config
+
+- name: create haproxy service
+  copy:
+    src: systemd/haproxy.service
+    dest: /etc/systemd/system/haproxy.service
+  become: true
+  become_user: root
+  register: create_haproxy_service
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+  become: true
+  become_user: root
+  when: create_haproxy_service.changed
+
+- name: enable service
+  command: systemctl enable haproxy
+  become: true
+  become_user: root
+  when: create_haproxy_service.changed
+
+- name: restart haproxy service
+  service:
+    name: haproxy
+    state: restarted
+  become: true
+  become_user: root
+  when: create_haproxy_service.changed

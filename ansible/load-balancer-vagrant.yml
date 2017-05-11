@@ -2,3 +2,4 @@
   roles:
     - role: consul
     - role: fabio
+    - role: haproxy
