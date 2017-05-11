@@ -1,4 +1,4 @@
-- hosts: server
+- hosts: nomad-server
   tasks:
     - name: find nomad jobs
       find:

@@ -13,8 +13,8 @@ end
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
 
-  config.vm.define "server" do |c|
-    c.vm.host_name = "server"
+  config.vm.define "nomad-server" do |c|
+    c.vm.host_name = "nomad-server"
 
     # The Consul UI is on port 8500 at this IP address.
     c.vm.network "private_network", ip: "192.168.249.2"
@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
     install_python(c)
 
     c.vm.provision "ansible" do |ansible|
-      ansible.playbook = "ansible/server-vagrant.yml"
+      ansible.playbook = "ansible/nomad-server-vagrant.yml"
       ansible.host_key_checking = false
     end
   end
