@@ -12,6 +12,34 @@
   become: true
   become_user: root
 
+- name: check consul app-count key
+  uri:
+    url: "http://{{ consul_server_ip }}:8500/v1/kv/app-count?raw=true"
+    return_content: yes
+    status_code: [200, 404]
+  register: app_count
+
+- name: create consul app-count key
+  uri:
+    url: "http://{{ consul_server_ip }}:8500/v1/kv/app-count"
+    method: PUT
+    body: "1"
+  when: app_count.status == 404
+
+- name: check consul app-image key
+  uri:
+    url: "http://{{ consul_server_ip }}:8500/v1/kv/app-image?raw=true"
+    return_content: yes
+    status_code: [200, 404]
+  register: app_image
+
+- name: create consul app-image key
+  uri:
+    url: "http://{{ consul_server_ip }}:8500/v1/kv/app-image"
+    method: PUT
+    body: "1"
+  when: app_image.status == 404
+
 - name: create nomad jobs directory
   file:
     path: "{{ nomad_data_dir }}"
