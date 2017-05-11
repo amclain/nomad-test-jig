@@ -8,7 +8,7 @@ job "app" {
       driver = "docker"
 
       config {
-        image = "amclain/nomad-test-jig-app:{{ keyOrDefault "app-tag" "1" }}"
+        image = "amclain/nomad-test-jig-app:{{ keyOrDefault "app-image" "1" }}"
       }
 
       service {
