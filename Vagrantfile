@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
 
     c.vm.provider "virtualbox" do |vb|
       vb.cpus = 2
-      vb.memory = "1024"
+      vb.memory = "2048"
     end
 
     install_python(c)
@@ -64,6 +64,24 @@ Vagrant.configure("2") do |config|
 
     c.vm.provision "ansible" do |ansible|
       ansible.playbook = "ansible/load-balancer-vagrant.yml"
+      ansible.host_key_checking = false
+    end
+  end
+
+  config.vm.define "load-test" do |c|
+    c.vm.host_name = "load-test"
+
+    c.vm.network "private_network", ip: "192.168.249.5"
+
+    c.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = "1024"
+    end
+
+    install_python(c)
+
+    c.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/load-test-vagrant.yml"
       ansible.host_key_checking = false
     end
   end

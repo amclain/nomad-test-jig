@@ -20,13 +20,13 @@ job "app" {
           type = "http"
           path = "/health"
           interval = "10s"
-          timeout = "2s"
+          timeout = "10s"
         }
       }
 
       resources {
         cpu = 500
-        memory = 256
+        memory = 512
 
         network {
           mbits = 1

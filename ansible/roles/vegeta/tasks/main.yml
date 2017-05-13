@@ -1,0 +1,47 @@
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  become_user: root
+
+- name: install apt packages
+  apt:
+    name: "{{ item }}"
+  become: true
+  become_user: root
+  with_items:
+    - ca-certificates
+    - curl
+    - wget
+    - unzip
+    - build-essential
+
+- name: download vegeta
+  get_url:
+    url: "{{ vegeta_download_url }}"
+    dest: /opt/vegeta.zip
+    checksum: "{{ vegeta_download_checksum }}"
+  become: true
+  become_user: root
+  register: download_vegeta
+
+- name: unzip vegeta
+  unarchive:
+    src: /opt/vegeta.zip
+    dest: /usr/bin
+    copy: no
+    remote_src: true
+  become: true
+  become_user: root
+  when: download_vegeta.changed
+  register: vegeta_unzipped
+
+- name: create vegeta directory
+  file:
+    path: /opt/vegeta
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+  become: true
+  become_user: root
