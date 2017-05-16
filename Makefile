@@ -5,6 +5,10 @@ TARGET_IP ?= 192.168.249.4
 
 .PHONY: clean run-app load-test
 
+up:
+	@ vagrant up --provision
+	@ $(MAKE) run-app
+
 clean:
 	@ vagrant destroy -f
 	@ rm -rf .vagrant
