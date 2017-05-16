@@ -114,4 +114,4 @@
     state: restarted
   become: true
   become_user: root
-  when: create_haproxy_service.changed
+  when: download_haproxy.changed or create_haproxy_service.changed

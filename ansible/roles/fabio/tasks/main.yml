@@ -8,6 +8,7 @@
     checksum: "{{ fabio_download_checksum }}"
   become: true
   become_user: root
+  register: download_fabio
 
 - name: make fabio executable
   file:
@@ -42,4 +43,4 @@
     state: restarted
   become: true
   become_user: root
-  when: create_fabio_service.changed
+  when: download_fabio.changed or create_fabio_service.changed

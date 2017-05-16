@@ -83,4 +83,4 @@
     state: restarted
   become: true
   become_user: root
-  when: create_nomad_service.changed or create_nomad_config.changed
+  when: download_nomad.changed or create_nomad_service.changed or create_nomad_config.changed

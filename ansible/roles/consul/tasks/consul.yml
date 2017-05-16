@@ -74,7 +74,7 @@
     state: restarted
   become: true
   become_user: root
-  when: create_consul_service.changed or create_consul_config.changed or create_consul_server_config.changed
+  when: download_consul.changed or create_consul_service.changed or create_consul_config.changed or create_consul_server_config.changed
 
 - name: remove resolvconf
   apt:

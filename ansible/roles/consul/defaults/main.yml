@@ -1,5 +1,5 @@
-consul_download_url: https://releases.hashicorp.com/consul/0.8.1/consul_0.8.1_linux_amd64.zip
-consul_download_checksum: "sha256:74cdd7ad458aa63192222ad2bd14178fc3596d4fd64d12a80520d4e6f93eaf34"
+consul_download_url: https://releases.hashicorp.com/consul/0.8.3/consul_0.8.3_linux_amd64.zip
+consul_download_checksum: "sha256:f894383eee730fcb2c5936748cc019d83b220321efd0e790dae9a3266f5d443a"
 consul_template_download_url: https://releases.hashicorp.com/consul-template/0.18.2/consul-template_0.18.2_linux_amd64.zip
 consul_template_download_checksum: "sha256:6fee6ab68108298b5c10e01357ea2a8e4821302df1ff9dd70dd9896b5c37217c"
 consul_data_dir: /opt/consul

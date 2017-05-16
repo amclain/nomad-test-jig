@@ -50,4 +50,4 @@
     state: restarted
   become: true
   become_user: root
-  when: create_consul_template_service.changed
+  when: download_consul_template.changed or create_consul_template_service.changed
