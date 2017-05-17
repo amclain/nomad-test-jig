@@ -17,8 +17,7 @@ job "app" {
         tags = ["urlprefix-/"]
 
         check {
-          type = "http"
-          path = "/health"
+          type = "tcp"
           interval = "10s"
           timeout = "10s"
         }
