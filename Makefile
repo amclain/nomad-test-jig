@@ -3,7 +3,10 @@ RATE ?= 5
 DURATION ?= 60
 TARGET_IP ?= 192.168.249.4
 
-.PHONY: clean run-app load-test
+# Build vars
+IMAGE_TAG ?= 1
+
+.PHONY: clean run-app load-test build
 
 up:
 	@ vagrant up --provision
@@ -24,3 +27,9 @@ load-test:
 		"echo 'GET http://$(TARGET_IP)/' | \
 		vegeta attack -rate=$(RATE) -duration=$(DURATION)s > /opt/vegeta/result.bin && \
 		vegeta report -inputs=/opt/vegeta/result.bin"
+
+# Rebuilds the app container, and accepts an optional IMAGE_TAG param. Normally
+# this is not necessary, since the stock images are pulled from docker hub.
+build:
+	@ cd docker/app; \
+	docker build -t amclain/nomad-test-jig-app:$(IMAGE_TAG) .
