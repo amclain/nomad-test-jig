@@ -52,3 +52,47 @@ Error Set:
 ```
 
 In the latter set of results there are `502` and `404` errors being returned from the load balancers. `404` in this case is a little misleading, but it's the error returned by fabio when no backend is available.
+
+### Consul HTTP Health Check Times Out
+
+The following steps reproduce an issue where consul HTTP health checks timeout and cause the application to be taken out of traffic, even though the responses are being received well under the timeout threshold. TCP health checks don't seem to experience this issue, and behave as expected.
+
+* Run `make load-test RATE=25` to observe that the traffic is stable (`200` code responses) with a TCP health check.
+* Change the [app health check](ansible/roles/nomad-server/files/nomad/app.hcl.ctmpl) in the nomad job file to an HTTP health check:
+```hcl
+check {
+  type = "http"
+  path = "/health"
+  interval = "10s"
+  timeout = "10s"
+}
+```
+
+* Reload the nomad job with `vagrant provision nomad-server && make run-app`.
+* Run `make load-test RATE=25` again. Notice the non-200 codes, which is traffic that was dropped due to the consul health check failing, causing the app container to be taken out of the load balancer.
+
+TCP health check example:
+```text
+Requests      [total, rate]            1500, 25.02
+Duration      [total, attack, wait]    59.962983759s, 59.959999715s, 2.984044ms
+Latencies     [mean, 50, 95, 99, max]  4.031206ms, 3.597071ms, 7.100006ms, 10.494793ms, 20.395344ms
+Bytes In      [total, mean]            19500, 13.00
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  100.00%
+Status Codes  [code:count]             200:1500
+Error Set:
+```
+
+HTTP health check example:
+```text
+make load-test RATE=25
+Requests      [total, rate]            1500, 25.02
+Duration      [total, attack, wait]    59.962170151s, 59.959999831s, 2.17032ms
+Latencies     [mean, 50, 95, 99, max]  3.830348ms, 3.467822ms, 6.581545ms, 9.690867ms, 30.031989ms
+Bytes In      [total, mean]            16250, 10.83
+Bytes Out     [total, mean]            0, 0.00
+Success       [ratio]                  83.33%
+Status Codes  [code:count]             200:1250  404:250
+Error Set:
+404 Not Found
+```
