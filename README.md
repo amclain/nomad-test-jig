@@ -7,8 +7,9 @@ This test jig was created to reproduce and diagnose an issue we encountered with
 ## Initializing The Environment
 
 Prerequisites:
-* [ansible](http://docs.ansible.com/ansible/intro_installation.html)
-* [vagrant](https://www.vagrantup.com/downloads.html)
+* [ansible](http://docs.ansible.com/ansible/intro_installation.html) `2.3.0.0`
+* [vagrant](https://www.vagrantup.com/downloads.html) `1.9.4`
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads) `5.1.22`
 
 ```text
 $ vagrant up
