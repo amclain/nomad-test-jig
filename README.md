@@ -15,7 +15,7 @@ $ vagrant up
 $ make run-app
 ```
 
-`make run-app` runs the latest nomad job file, and therefore only needs to be executed after creating the containers or editing the job file.
+`make run-app` runs the latest nomad job file, and therefore only needs to be executed after creating the virtual machines or editing the job file.
 
 ## Reproducing Issues
 
