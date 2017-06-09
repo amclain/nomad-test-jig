@@ -24,9 +24,10 @@ run-app:
 
 load-test:
 	@ vagrant ssh load-test -c \
-		"echo 'GET http://$(TARGET_IP)/' | \
-		vegeta attack -rate=$(RATE) -duration=$(DURATION)s > /opt/vegeta/result.bin && \
-		vegeta report -inputs=/opt/vegeta/result.bin"
+		"echo 'GET http://$(TARGET_IP)/' \
+		| vegeta attack -rate=$(RATE) -duration=$(DURATION)s \
+		| tee /opt/vegeta/result.bin \
+		| vegeta report"
 
 # Rebuilds the app container, and accepts an optional IMAGE_TAG param. Normally
 # this is not necessary, since the stock images are pulled from docker hub.
